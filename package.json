@@ -40,7 +40,7 @@
     "electron": ">=20.0.0"
   },
   "devDependencies": {
-    "electron": "^35.0.0",
+    "electron": "^39.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0"
   },
