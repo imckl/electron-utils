@@ -72,45 +72,57 @@
 
 如果用户选择"取消"，则终止流程。
 
-### 7. 构建
+### 7. 验证构建
 
 ```bash
 npm run build
 ```
 
-如果构建失败，终止流程。
+如果构建失败，终止流程。此步骤验证代码能成功构建，失败不会污染版本。
 
 ### 8. 更新 package.json
 
 修改 `package.json`：
 - `version` → 新版本
 
-### 9. 提交改动
+### 9. 正式构建
+
+```bash
+npm run build
+```
+
+用新版本号重新构建，确保构建产物中版本号正确。
+
+### 10. 提交改动
 
 ```bash
 git add package.json
 git commit -m "chore: release v{新版本}"
 ```
 
-### 10. 创建 Git tag
+### 11. 创建 Git tag
 
 ```bash
 git tag v{新版本}
 ```
 
-### 11. 发布到 npm
+### 12. 发布到 npm
+
+提示用户手动执行（因为需要 2FA 验证码）：
 
 ```bash
 npm publish
 ```
 
-### 12. 推送到远程
+等待用户确认发布成功后继续。
+
+### 13. 推送到远程
 
 ```bash
 git push && git push --tags
 ```
 
-### 13. 完成提示
+### 14. 完成提示
 
 ```
 ✅ 版本 {新版本} 发布完成！
@@ -125,4 +137,4 @@ git push && git push --tags
 - 在 WSL2 环境下运行，安装依赖时使用 `ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm install` 跳过 electron 二进制下载
 - npm publish 需要已登录（`npm login`）
 - npm publish 需要 2FA 验证（Security Key）
-- 发布前会自动运行 `npm run build`
+- 发布前会运行两次构建：第一次验证代码，第二次用新版本号正式构建
