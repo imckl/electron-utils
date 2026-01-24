@@ -19,6 +19,14 @@ src/
     └── types.ts             # 共享类型定义
 ```
 
+## 开发环境
+
+在 WSL2 环境下安装依赖时，跳过 Electron 二进制下载（本包只需类型定义）：
+
+```bash
+ELECTRON_SKIP_BINARY_DOWNLOAD=1 npm install
+```
+
 ## 构建配置
 
 使用 tsup 多入口构建，每个入口独立配置：
