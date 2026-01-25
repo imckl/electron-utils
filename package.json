@@ -1,6 +1,6 @@
 {
   "name": "@imckl/electron-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Electron common utilities for window, menu, tray and more",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
