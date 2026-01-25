@@ -50,7 +50,40 @@
 
 如果没有 tag，运行 `git log --oneline -10` 获取最近提交。
 
-### 6. 展示发版计划并确认
+### 6. 生成 CHANGELOG 内容
+
+解析 Conventional Commits 格式，按类型分组：
+
+| Commit Type | Changelog Section |
+|-------------|-------------------|
+| `feat` | Added |
+| `fix` | Fixed |
+| `refactor`, `perf` | Changed |
+| `docs` | Documentation |
+| 其他 | 忽略（chore, style, test, ci, build） |
+
+生成格式：
+
+```markdown
+## [0.1.0] - 2026-01-25
+
+### Added
+- **layout:** 菜单自动关联 Tab
+
+### Changed
+- **types:** 移除 useTabManager 泛型
+
+### Fixed
+- **main:** 修复右键菜单不显示问题
+```
+
+规则：
+- 版本号格式：`[x.x.x]`
+- 日期格式：`YYYY-MM-DD`
+- 每条记录格式：`- **scope:** description`（无 scope 则省略）
+- 空的 section 不输出
+
+### 7. 展示发版计划并确认
 
 使用 AskUserQuestion 工具展示计划并请求确认：
 
@@ -59,10 +92,14 @@
 ────────────────────────────
 版本: {当前版本} → {新版本}
 
-提交记录:
-  - {提交1}
-  - {提交2}
-  ...
+CHANGELOG 预览:
+## [{新版本}] - {今天日期}
+
+### Added
+- **layout:** xxx
+
+### Changed
+- **types:** xxx
 ────────────────────────────
 ```
 
@@ -72,7 +109,7 @@
 
 如果用户选择"取消"，则终止流程。
 
-### 7. 验证构建
+### 8. 验证构建
 
 ```bash
 npm run build
@@ -80,12 +117,17 @@ npm run build
 
 如果构建失败，终止流程。此步骤验证代码能成功构建，失败不会污染版本。
 
-### 8. 更新 package.json
+### 9. 更新 CHANGELOG.md
+
+- 如果文件不存在，创建并添加标题 `# Changelog\n\n`
+- 在标题后插入新版本内容（保留历史版本）
+
+### 10. 更新 package.json
 
 修改 `package.json`：
 - `version` → 新版本
 
-### 9. 正式构建
+### 11. 正式构建
 
 ```bash
 npm run build
@@ -93,20 +135,20 @@ npm run build
 
 用新版本号重新构建，确保构建产物中版本号正确。
 
-### 10. 提交改动
+### 12. 提交改动
 
 ```bash
-git add package.json
+git add package.json CHANGELOG.md
 git commit -m "chore: release v{新版本}"
 ```
 
-### 11. 创建 Git tag
+### 13. 创建 Git tag
 
 ```bash
 git tag v{新版本}
 ```
 
-### 12. 发布到 npm
+### 14. 发布到 npm
 
 提示用户手动执行（因为需要 2FA 验证码）：
 
@@ -116,18 +158,19 @@ npm publish
 
 等待用户确认发布成功后继续。
 
-### 13. 推送到远程
+### 15. 推送到远程
 
 ```bash
 git push && git push --tags
 ```
 
-### 14. 完成提示
+### 16. 完成提示
 
 ```
 ✅ 版本 {新版本} 发布完成！
 
 已完成：
+- 更新 CHANGELOG.md
 - npm publish
 - git push + tags
 ```
@@ -138,3 +181,4 @@ git push && git push --tags
 - npm publish 需要已登录（`npm login`）
 - npm publish 需要 2FA 验证（Security Key）
 - 发布前会运行两次构建：第一次验证代码，第二次用新版本号正式构建
+- CHANGELOG.md 遵循 [Keep a Changelog](https://keepachangelog.com/) 格式
